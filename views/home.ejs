@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/16fcd17eb5.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/home.css">
+    <title><%= title%></title>
+</head>
+<body>
+  
+        <nav class="navbar">
+            <div class="icon">
+                <i class="fa-solid fa-heading fa-lg" style="color: white;"></i>
+            </div>
+          <div class="name">
+               <p> Habbit Tracker</p>
+          </div>
+        </nav>
+
+        <main class="main">
+          <div class="quote">
+            <p>
+            Build Better Habits,<br>
+            Build a Better Life
+            </p>
+          </div>
+
+          <form class="form" action="/createhabbit" method="post">
+            <input class="input" name="habbit" placeholder="Type your habbit here...">
+            <button type="submit">Add </button>
+          </form>
+
+          <div class="sign">
+            <div class="signs">
+                <i class="fa-sharp fa-solid fa-circle-check" style="color: #00d640;"></i>
+                <p>Done</p>          
+             </div>
+
+            <div class="signs">
+                <i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>  
+                <p>Not Done</p>          
+            </div>
+
+            <div class="signs">
+                <i class="fa-solid fa-circle-minus" style="color:  #ff8000;"></i>  
+                <p>Unmarked</p>  
+            </div>   
+        </div>
+
+        <section class="habit-list">
+
+            <% for ( h of habits ) { %>
+                <div class="list-items">
+                    <%  let currentDate = new Date();
+                        let dd = currentDate.getDate();
+                        let mm = currentDate.getMonth() + 1;
+                        const yyyy = currentDate.getFullYear();
+                        if (dd < 10) dd = '0' + dd;
+                        if (mm < 10) mm = '0' + mm;
+                        let today = dd + '/' + mm + '/' + yyyy;
+                        let found;
+                        let status;
+                        h.dates.find((item) => {
+                                        if(item.date === today)
+                                        {
+                                            found = true;
+                                            status = item.complete;
+                                        }
+                                    });
+                    %>
+                    <div class="habbit">
+                        <div class="habbit-sign">
+                            <a href="/status-update/?id=<%= h._id %>&date=<%= today %>">
+                                <% if(found && status==='yes'){ %>
+                                    <i class="fa-sharp fa-solid fa-circle-check" style="color: #00d640;"></i>
+                                    <% } else if(found && status==='no'){ %>
+                                        <i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>  
+                                    <% } else { %>
+                                        <i class="fa-solid fa-circle-minus" style="color:  #ff8000;"></i>  
+                                    <% } %>
+                            </a>
+                        </div>
+
+                        <div class="text">
+                            <p><%= h.habbit %> - <span id="weekly">Weekly</span></p> 
+                        </div>
+
+                        <div class="habbit-sign">
+                            <!-- for delete button -->
+                            <a href="/delete-habit/?id=<%= h._id%>">
+                                <i class="fa-solid fa-trash" style="color: #d10000;"></i>
+                            </a>
+
+                                <!-- for favourite button -->
+                            <a href="/favorite-habbit/?id=<%= h._id %>" class="favorite">
+                                <% if(h.favorite) { %>
+                                    <i class="fa-solid fa-star" style="color: #e5ff00;"></i>
+                                <% } else { %>
+                                    <i class="fa-regular fa-star" style="color: #e5ff00;"></i>
+                                <% } %>
+                            </a>
+
+                        </div>
+                    </div>
+        
+                    <div class="dates">
+                        <% for ( d of weeklyDate ) { %>
+                            <div class="boxes">
+                                <% 
+                                    let find;
+                                    let stat;
+                                    h.dates.find((item) => {
+                                        if(item.date === d)
+                                        {
+                                            find = true;
+                                            stat = item.complete;
+                                        }
+                                    });
+                                %>
+                                <a href="/status-update/?id=<%= h._id %>&date=<%= d %>">
+                                    <% if(find && stat==='yes'){ %>
+                                        <i class="fa-sharp fa-solid fa-circle-check" style="color: #00d640;"></i>
+                                    <% } else if(find && stat==='no'){ %>
+                                        <i class="fa-solid fa-circle-xmark" style="color: #ff0000;"></i>  
+                                    <% } else { %>
+                                        <i class="fa-solid fa-circle-minus" style="color:  #ff8000;"></i>  
+                                    <% } %>
+                                </a>
+                                
+                                <p><%= d %></p>
+                            </div>
+                            <%}%>
+                        
+                    </div>
+                </div>
+            <% } %>
+
+        </section>
+        
+
+
+     </main>
+  
+    
+</body>
+</html>
